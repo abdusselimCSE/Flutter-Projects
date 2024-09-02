@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:sum_app/sum_app.dart';
+
+import 'app.dart';
 
 void main() {
-  runApp(const SumApp());
+  runApp(const WaterTrackerApp());
 }

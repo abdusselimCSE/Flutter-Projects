@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sum_app/water_track.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,135 +10,121 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _firstNumTEController = TextEditingController();
-  final TextEditingController _secondNumTEController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _glassNoTEController = TextEditingController(
+    text: '1',
+  );
 
-  double _result = 0;
+  List<WaterTrack> waterTrackList = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Calculator"),
+        title: const Text("Water Tracker"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _firstNumTEController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: "First number",
-                  labelText: 'First number',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Enter a value";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _secondNumTEController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: "Second number",
-                  labelText: 'Second number',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Enter a value";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildButtonBar(),
-              const SizedBox(height: 24),
-              Text(
-                "Result : ${_result.toStringAsFixed(2)}",
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            ],
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildWaterTrackCounter(),
+          const SizedBox(height: 24),
+          Expanded(
+            child: _buildWaterTrackListView(),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWaterTrackListView() {
+    return ListView.separated(
+      itemCount: waterTrackList.length,
+      itemBuilder: (context, index) {
+        return _buildWaterTrackListTile(index);
+      },
+      separatorBuilder: (context, index) {
+        return const Divider();
+      },
+    );
+  }
+
+  Widget _buildWaterTrackListTile(int index) {
+    WaterTrack waterTrack = waterTrackList[index];
+    return ListTile(
+      title: Text("${waterTrack.dateTime.hour}:${waterTrack.dateTime.minute}"),
+      subtitle: Text(
+          "${waterTrack.dateTime.day}/${waterTrack.dateTime.month}/${waterTrack.dateTime.year}"),
+      leading: CircleAvatar(child: Text("${waterTrack.noOfGlasses}")),
+      trailing: IconButton(
+        onPressed: () => _onTabRemoveButton(index),
+        icon: const Icon(
+          CupertinoIcons.delete_simple,
         ),
       ),
     );
   }
 
-  Widget _buildButtonBar() {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
+  Widget _buildWaterTrackCounter() {
+    return Column(
       children: [
-        IconButton(
-          onPressed: () {
-            _onTapAddButton();
-          },
-          icon: const Icon(
-            CupertinoIcons.add,
+        Text(
+          getTotalGlassCount().toString(),
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        IconButton(
-            onPressed: _onTapSubButton, icon: const Icon(CupertinoIcons.minus)),
-        IconButton(
-            onPressed: _onTapDivButton,
-            icon: const Icon(CupertinoIcons.divide)),
-        IconButton(
-            onPressed: _onTapMulButton,
-            icon: const Icon(CupertinoIcons.multiply)),
+        const Text(
+          "Glass/s",
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 50,
+              child: TextField(
+                controller: _glassNoTEController,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            TextButton(
+              onPressed: _onTapAddWaterTrack,
+              child: const Text("Add"),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  void _onTapAddButton() {
-    if (_formKey.currentState!.validate()) {
-      double first_number = double.tryParse(_firstNumTEController.text) ?? 0;
-      double second_number = double.tryParse(_secondNumTEController.text) ?? 0;
-      _result = first_number + second_number;
-      setState(() {});
+  int getTotalGlassCount() {
+    int counter = 0;
+    for (WaterTrack t in waterTrackList) {
+      counter += t.noOfGlasses;
     }
+    return counter;
   }
 
-  void _onTapSubButton() {
-    if (_formKey.currentState!.validate()) {
-      double first_number = double.tryParse(_firstNumTEController.text) ?? 0;
-      double second_number = double.tryParse(_secondNumTEController.text) ?? 0;
-      _result = first_number - second_number;
-      setState(() {});
+  void _onTapAddWaterTrack() {
+    if (_glassNoTEController.text.isEmpty) {
+      _glassNoTEController.text = '1';
     }
-  }
+    final int noOfGlasses = int.tryParse(_glassNoTEController.text) ?? 1;
 
-  void _onTapDivButton() {
-    if (_formKey.currentState!.validate() == false) {
-      return;
-    }
-    double first_number = double.tryParse(_firstNumTEController.text) ?? 0;
-    double second_number = double.tryParse(_secondNumTEController.text) ?? 0;
-    _result = first_number / second_number;
+    WaterTrack waterTrack = WaterTrack(
+      noOfGlasses: noOfGlasses,
+      dateTime: DateTime.now(),
+    );
+    waterTrackList.add(waterTrack);
     setState(() {});
   }
 
-  void _onTapMulButton() {
-    if (_formKey.currentState!.validate() == false) {
-      return;
-    }
-    double first_number = double.tryParse(_firstNumTEController.text) ?? 0;
-    double second_number = double.tryParse(_secondNumTEController.text) ?? 0;
-    _result = first_number * second_number;
+  void _onTabRemoveButton(int index) {
+    waterTrackList.removeAt(index);
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _firstNumTEController.dispose();
-    _secondNumTEController.dispose();
   }
 }
