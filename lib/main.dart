@@ -1,7 +1,21 @@
-import 'package:flutter/cupertino.dart';
-
-import 'app.dart';
+import 'package:flutter/material.dart';
+import 'package:sum_app/home_screen.dart';
 
 void main() {
-  runApp(const WaterTrackerApp());
+  runApp(WeatherApp());
+}
+
+class WeatherApp extends StatelessWidget {
+  const WeatherApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AppHomeScreen(),
+      theme: ThemeData(
+        primaryColor: Colors.white,
+      ),
+    );
+  }
 }

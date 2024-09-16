@@ -1,130 +1,186 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sum_app/water_track.dart';
+import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+import 'constants.dart' as k;
+
+class AppHomeScreen extends StatefulWidget {
+  const AppHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<AppHomeScreen> createState() => _AppHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _glassNoTEController = TextEditingController(
-    text: '1',
-  );
+class _AppHomeScreenState extends State<AppHomeScreen> {
+  bool isLoaded = false;
+  String cityName = '';
+  TextEditingController textEditingController = TextEditingController();
 
-  List<WaterTrack> waterTrackList = [];
-
+  Map<String, dynamic>? weatherData;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Water Tracker"),
+        backgroundColor: Color(0xFFE0AAFF),
+        elevation: 5,
+        title: Text(
+          "Weather App",
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildWaterTrackCounter(),
-          const SizedBox(height: 24),
-          Expanded(
-            child: _buildWaterTrackListView(),
+      backgroundColor: Color(0xFFE0AAFF),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildSearchBar(context),
+              SizedBox(height: 20),
+              Expanded(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    weatherData?["city"],
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    "${weatherData!["temperature"].round().toString()}°C",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Lottie.asset(
+                    getWeatherAnimation(weatherData!["condition"]),
+                    height: 200,
+                    width: 200,
+                  ),
+                  // Text(
+                  //   "${weatherData!["condition"]}",
+                  //   style: TextStyle(
+                  //     fontSize: 20,
+                  //     fontWeight: FontWeight.w600,
+                  //   ),
+                  // ),
+                ],
+              ))
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWaterTrackListView() {
-    return ListView.separated(
-      itemCount: waterTrackList.length,
-      itemBuilder: (context, index) {
-        return _buildWaterTrackListTile(index);
-      },
-      separatorBuilder: (context, index) {
-        return const Divider();
-      },
-    );
-  }
-
-  Widget _buildWaterTrackListTile(int index) {
-    WaterTrack waterTrack = waterTrackList[index];
-    return ListTile(
-      title: Text("${waterTrack.dateTime.hour}:${waterTrack.dateTime.minute}"),
-      subtitle: Text(
-          "${waterTrack.dateTime.day}/${waterTrack.dateTime.month}/${waterTrack.dateTime.year}"),
-      leading: CircleAvatar(child: Text("${waterTrack.noOfGlasses}")),
-      trailing: IconButton(
-        onPressed: () => _onTabRemoveButton(index),
-        icon: const Icon(
-          CupertinoIcons.delete_simple,
         ),
       ),
     );
   }
 
-  Widget _buildWaterTrackCounter() {
-    return Column(
-      children: [
-        Text(
-          getTotalGlassCount().toString(),
-          style: const TextStyle(
-            fontSize: 24,
+  Widget _buildSearchBar(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      height: MediaQuery.of(context).size.height * 0.07,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      alignment: Alignment.center,
+      child: TextField(
+        onSubmitted: (String city) {
+          setState(() {
+            cityName = city;
+            isLoaded = false; // Reset loading state
+            textEditingController.clear();
+          });
+          getCurrentCityWeather(cityName);
+        },
+        controller: textEditingController,
+        cursorColor: Colors.white,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        decoration: InputDecoration(
+          hintText: 'City name',
+          hintStyle: TextStyle(
+            fontSize: 18,
+            color: Colors.white.withOpacity(0.7),
             fontWeight: FontWeight.w600,
           ),
-        ),
-        const Text(
-          "Glass/s",
-          style: TextStyle(
-            fontSize: 16,
+          prefixIcon: Icon(
+            CupertinoIcons.search,
+            size: 30,
+            color: Colors.white.withOpacity(0.7),
           ),
+          border: InputBorder.none,
         ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 50,
-              child: TextField(
-                controller: _glassNoTEController,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            TextButton(
-              onPressed: _onTapAddWaterTrack,
-              child: const Text("Add"),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 
-  int getTotalGlassCount() {
-    int counter = 0;
-    for (WaterTrack t in waterTrackList) {
-      counter += t.noOfGlasses;
+  Future<void> getCurrentCityWeather(String cityname) async {
+    var client = http.Client();
+    var uri =
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityname&appid=${k.apiKey}&units=metric'; // Add &units=metric for Celsius
+    var url = Uri.parse(uri);
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var decodeData = jsonDecode(response.body);
+      print(decodeData);
+      setState(
+        () {
+          isLoaded = true;
+          weatherData = {
+            'temperature': decodeData['main']['temp'],
+            'pressure': decodeData['main']['pressure'],
+            'humidity': decodeData['main']['humidity'],
+            'city': decodeData['name'],
+            'country': decodeData['sys']['country'],
+            'condition': decodeData['weather'][0]['main'],
+            'icon': decodeData['weather'][0]['icon']
+          };
+        },
+      );
+    } else {
+      print('Failed to load weather data: ${response.statusCode}');
     }
-    return counter;
   }
 
-  void _onTapAddWaterTrack() {
-    if (_glassNoTEController.text.isEmpty) {
-      _glassNoTEController.text = '1';
-    }
-    final int noOfGlasses = int.tryParse(_glassNoTEController.text) ?? 1;
+  String getWeatherAnimation(String? condition) {
+    if (condition == null) return "assets/weather/sunny.json";
 
-    WaterTrack waterTrack = WaterTrack(
-      noOfGlasses: noOfGlasses,
-      dateTime: DateTime.now(),
-    );
-    waterTrackList.add(waterTrack);
-    setState(() {});
+    switch (weatherData!["condition"].toString().toLowerCase()) {
+      case 'clouds':
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+      case 'fog':
+        return "assets/weather/cloudy.json";
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return "assets/weather/rainy.json";
+      case 'thunderstorm':
+        return "assets/weather/storm.json";
+      case 'clear':
+      case 'clear sky':
+        return "assets/weather/sunny.json";
+      default:
+        return "assets/weather/sunny.json";
+    }
   }
 
-  void _onTabRemoveButton(int index) {
-    waterTrackList.removeAt(index);
-    setState(() {});
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
   }
 }

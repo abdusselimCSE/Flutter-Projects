@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Add Location Permission Keys -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to provide weather updates.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to provide continuous weather updates, even when the app is in the background.</string>
 </dict>
 </plist>
