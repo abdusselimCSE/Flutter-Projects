@@ -43,7 +43,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                   getCurrentLocation();
                 });
               },
-              icon: Icon(
+              icon: const Icon(
                 CupertinoIcons.location_solid,
                 color: Colors.white,
                 size: 30,
@@ -51,9 +51,9 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             ),
           )
         ],
-        backgroundColor: Color(0xFFE0AAFF),
+        backgroundColor: const Color(0xFFE0AAFF),
         elevation: 5,
-        title: Text(
+        title: const Text(
           "Weather App",
           style: TextStyle(
             fontWeight: FontWeight.w800,
@@ -61,7 +61,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
           ),
         ),
       ),
-      backgroundColor: Color(0xFFE0AAFF),
+      backgroundColor: const Color(0xFFE0AAFF),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 20),
@@ -69,14 +69,14 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _buildSearchBar(context),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       weatherData?["city"] ?? "City not available",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
@@ -92,8 +92,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                       weatherData != null
                           ? "${weatherData!["temperature"]?.round().toString()}°C"
                           : "N/A",
-                      style: TextStyle(
-                        fontSize: 20,
+                      style: const TextStyle(
+                        fontSize: 30,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -107,7 +107,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                       ),
                     Text(
                       weatherData?["description"] ?? "Condition not available",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
@@ -115,11 +115,69 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                   ],
                 ),
               ),
-              // Expanded(child: Row(
-              //   children: [
-              //     Text(data)
-              //   ],
-              // ))
+              const SizedBox(height: 20),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Humidity Section
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.water_drop, // Humidity icon
+                          size: 30,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "${weatherData!["humidity"].toString()}%", // Humidity value with %
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Text(
+                          "Humidity", // Label
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 40), // Space between the two sections
+
+                    // Pressure Section
+                    Column(
+                      children: [
+                        const Icon(
+                          Icons.speed, // Pressure icon
+                          size: 30,
+                          color: Colors.redAccent,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          "${weatherData!["pressure"].toString()} hPa", // Pressure value with hPa
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const Text(
+                          "Pressure", // Label
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -131,10 +189,10 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
       height: MediaQuery.of(context).size.height * 0.06,
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.3),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
       alignment: Alignment.center,
       child: TextField(
@@ -148,7 +206,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         },
         controller: textEditingController,
         cursorColor: Colors.white,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: Colors.white,
