@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 
@@ -20,15 +22,43 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   TextEditingController textEditingController = TextEditingController();
 
   Map<String, dynamic>? weatherData;
+
+  @override
+  void initState() {
+    getCurrentLocation();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  getCurrentLocation();
+                });
+              },
+              icon: Icon(
+                CupertinoIcons.location_solid,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          )
+        ],
         backgroundColor: Color(0xFFE0AAFF),
         elevation: 5,
         title: Text(
           "Weather App",
-          style: TextStyle(fontWeight: FontWeight.w800),
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: Colors.black87,
+          ),
         ),
       ),
       backgroundColor: Color(0xFFE0AAFF),
@@ -41,38 +71,55 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
               _buildSearchBar(context),
               SizedBox(height: 20),
               Expanded(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    weatherData?["city"],
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      weatherData?["city"] ?? "City not available",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "${weatherData!["temperature"].round().toString()}°C",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                    // Text(
+                    //   weatherData?["country"] ?? "City not available",
+                    //   style: TextStyle(
+                    //     fontSize: 20,
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // ),
+                    Text(
+                      weatherData != null
+                          ? "${weatherData!["temperature"]?.round().toString()}°C"
+                          : "N/A",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  Lottie.asset(
-                    getWeatherAnimation(weatherData!["condition"]),
-                    height: 200,
-                    width: 200,
-                  ),
-                  // Text(
-                  //   "${weatherData!["condition"]}",
-                  //   style: TextStyle(
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.w600,
-                  //   ),
-                  // ),
-                ],
-              ))
+                    if (weatherData !=
+                        null) // Ensure weatherData is available before displaying animation
+                      Lottie.asset(
+                        getWeatherAnimation(weatherData!["condition"]),
+                        height: 200,
+                        width: 200,
+                      ),
+                    Text(
+                      weatherData?["description"] ?? "Condition not available",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Expanded(child: Row(
+              //   children: [
+              //     Text(data)
+              //   ],
+              // ))
             ],
           ),
         ),
@@ -83,7 +130,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   Widget _buildSearchBar(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.85,
-      height: MediaQuery.of(context).size.height * 0.07,
+      height: MediaQuery.of(context).size.height * 0.06,
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.3),
@@ -144,6 +191,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             'city': decodeData['name'],
             'country': decodeData['sys']['country'],
             'condition': decodeData['weather'][0]['main'],
+            'description': decodeData['weather'][0]['description'],
             'icon': decodeData['weather'][0]['icon']
           };
         },
@@ -163,7 +211,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       case 'haze':
       case 'dust':
       case 'fog':
-        return "assets/weather/cloudy.json";
+        return "assets/weather/rainy.json";
       case 'rain':
       case 'drizzle':
       case 'shower rain':
@@ -175,6 +223,25 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         return "assets/weather/sunny.json";
       default:
         return "assets/weather/sunny.json";
+    }
+  }
+
+  Future<void> getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark geoCity = placemarks[0];
+      print(geoCity.locality);
+
+      getCurrentCityWeather(geoCity.locality.toString());
+
+      print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+    } catch (e) {
+      print('Failed to get location: $e');
     }
   }
 
