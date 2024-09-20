@@ -32,35 +32,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  getCurrentLocation();
-                });
-              },
-              icon: const Icon(
-                CupertinoIcons.location_solid,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          )
-        ],
-        backgroundColor: const Color(0xFFE0AAFF),
-        elevation: 5,
-        title: const Text(
-          "Weather App",
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.black87,
-          ),
-        ),
-      ),
+      appBar: _buildAppbar(),
       backgroundColor: const Color(0xFFE0AAFF),
       body: Center(
         child: Padding(
@@ -131,7 +103,9 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "${weatherData!["humidity"].toString()}%", // Humidity value with %
+                          weatherData != null
+                              ? "${weatherData!["humidity"].toString()}%"
+                              : "N/A",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -153,20 +127,22 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     Column(
                       children: [
                         const Icon(
-                          Icons.speed, // Pressure icon
+                          Icons.speed,
                           size: 30,
                           color: Colors.redAccent,
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "${weatherData!["pressure"].toString()} hPa", // Pressure value with hPa
+                          weatherData != null
+                              ? "${weatherData!["pressure"].toString()}hPa"
+                              : "N/A",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         const Text(
-                          "Pressure", // Label
+                          "Pressure",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w400,
@@ -180,6 +156,38 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  AppBar _buildAppbar() {
+    return AppBar(
+      centerTitle: false,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                getCurrentLocation();
+              });
+            },
+            icon: const Icon(
+              CupertinoIcons.location_solid,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+        )
+      ],
+      backgroundColor: const Color(0xFFE0AAFF),
+      elevation: 5,
+      title: const Text(
+        "Weather App",
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          color: Colors.black87,
         ),
       ),
     );
@@ -232,7 +240,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   Future<void> getCurrentCityWeather(String cityname) async {
     var client = http.Client();
     var uri =
-        'https://api.openweathermap.org/data/2.5/weather?q=$cityname&appid=${k.apiKey}&units=metric'; // Add &units=metric for Celsius
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityname&appid=${k.apiKey}&units=metric';
     var url = Uri.parse(uri);
     var response = await client.get(url);
 
@@ -269,7 +277,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       case 'haze':
       case 'dust':
       case 'fog':
-        return "assets/weather/rainy.json";
+        return "assets/weather/cloud.json";
       case 'rain':
       case 'drizzle':
       case 'shower rain':
