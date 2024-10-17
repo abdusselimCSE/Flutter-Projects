@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sum_app/ui/utils/app_colors.dart';
 
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   const TaskCard({
     super.key,
   });
 
+  @override
+  State<TaskCard> createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -36,11 +41,11 @@ class TaskCard extends StatelessWidget {
                 Wrap(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: _onTapEditButton,
                       icon: const Icon(Icons.edit),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: _onTapDeleteButton,
                       icon: const Icon(Icons.delete),
                     ),
                   ],
@@ -52,6 +57,38 @@ class TaskCard extends StatelessWidget {
       ),
     );
   }
+
+  void _onTapEditButton() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Status"),
+          content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: ['New', 'Completed', 'Cancelled', 'Progress'].map((e) {
+                return ListTile(
+                  onTap: () {},
+                  title: Text(e),
+                );
+              }).toList()),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancel")),
+            TextButton(
+              onPressed: () {},
+              child: const Text("Okay"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onTapDeleteButton() {}
 
   Widget _buildTaskStatusChip() {
     return Chip(
