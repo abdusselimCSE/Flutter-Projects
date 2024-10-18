@@ -91,6 +91,7 @@ class _TaskCardState extends State<TaskCard> {
 
   void _onTapDeleteButton() {}
 
+  // Task Status Chip
   Widget _buildTaskStatusChip() {
     return Chip(
       label: const Text(
