@@ -39,6 +39,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
           itemBuilder: (context, index) {
             return TaskCard(
               taskModel: _completedTaskList[index],
+              onRefreshList: _getCompletedTaskList,
             );
           },
           separatorBuilder: (context, index) {
@@ -55,7 +56,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     setState(() {});
 
     final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.newTaskList);
+        await NetworkCaller.getRequest(url: Urls.completedTaskList);
 
     if (response.isSuccess) {
       final TaskListModel taskListModel =

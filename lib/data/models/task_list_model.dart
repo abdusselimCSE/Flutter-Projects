@@ -4,7 +4,10 @@ class TaskListModel {
   String? status;
   List<TaskModel>? taskList;
 
-  TaskListModel({this.status, this.taskList});
+  TaskListModel({
+    this.status,
+    this.taskList,
+  });
 
   TaskListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
