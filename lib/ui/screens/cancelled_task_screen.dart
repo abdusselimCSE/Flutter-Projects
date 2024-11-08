@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sum_app/ui/widgets/task_card.dart';
 
 class CancelledTaskScreen extends StatelessWidget {
   const CancelledTaskScreen({super.key});
@@ -10,7 +9,7 @@ class CancelledTaskScreen extends StatelessWidget {
       child: ListView.separated(
         itemCount: 10,
         itemBuilder: (context, index) {
-          return TaskCard();
+          // return TaskCard();
         },
         separatorBuilder: (context, index) {
           return const SizedBox(height: 8);
