@@ -137,6 +137,7 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
 
     if (response.isSuccess) {
       AuthController.saveResetEmail(_emailTEController.text.trim());
+      print(AuthController.saveResetEmail(_emailTEController.text));
 
       showSnackBarMessage(context, 'OTP sent to your email address');
     } else {

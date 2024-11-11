@@ -62,40 +62,43 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
   }
 
   Widget _buildVerifyEmailForm() {
-    return Column(
-      children: [
-        PinCodeTextField(
-          length: 6,
-          obscureText: false,
-          controller: _otpTEController,
-          validator: (String? value) {
-            if (value!.isEmpty ?? true) {
-              return 'Please enter OTP';
-            }
-            return null;
-          },
-          animationType: AnimationType.fade,
-          keyboardType: TextInputType.number,
-          pinTheme: PinTheme(
-            shape: PinCodeFieldShape.box,
-            borderRadius: BorderRadius.circular(5),
-            fieldHeight: 50,
-            fieldWidth: 40,
-            activeFillColor: Colors.white,
-            inactiveFillColor: Colors.white,
-            selectedFillColor: Colors.white,
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          PinCodeTextField(
+            length: 6,
+            obscureText: false,
+            controller: _otpTEController,
+            validator: (String? value) {
+              if (value!.isEmpty ?? true) {
+                return 'Please enter OTP';
+              }
+              return null;
+            },
+            animationType: AnimationType.fade,
+            keyboardType: TextInputType.number,
+            pinTheme: PinTheme(
+              shape: PinCodeFieldShape.box,
+              borderRadius: BorderRadius.circular(5),
+              fieldHeight: 50,
+              fieldWidth: 40,
+              activeFillColor: Colors.white,
+              inactiveFillColor: Colors.white,
+              selectedFillColor: Colors.white,
+            ),
+            animationDuration: const Duration(milliseconds: 300),
+            backgroundColor: Colors.transparent,
+            enableActiveFill: true,
+            appContext: context,
           ),
-          animationDuration: const Duration(milliseconds: 300),
-          backgroundColor: Colors.transparent,
-          enableActiveFill: true,
-          appContext: context,
-        ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: _onTapVerifyOtpButton,
-          child: const Icon(Icons.arrow_circle_right_outlined),
-        ),
-      ],
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: _onTapNextButton,
+            child: const Icon(Icons.arrow_circle_right_outlined),
+          ),
+        ],
+      ),
     );
   }
 
@@ -123,21 +126,16 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
   }
 
   void _onTapNextButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ResetPasswordScreen(),
-      ),
-    );
-  }
-
-  void _onTapVerifyOtpButton() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     _verifyOtp();
   }
+
+  // void _onTapVerifyOtpButton() {
+  //
+  // }
 
   void _onTapSignIn() {
     Navigator.pushAndRemoveUntil(
@@ -165,6 +163,7 @@ class _ForgotPasswordOtpScreenState extends State<ForgotPasswordOtpScreen> {
           builder: (context) => const ResetPasswordScreen(),
         ),
       );
+
       showSnackBarMessage(context, 'OTP verified successfully');
     } else {
       showSnackBarMessage(context, 'Error: ${response.errorMessage}', true);
