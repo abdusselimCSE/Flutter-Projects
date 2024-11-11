@@ -11,4 +11,9 @@ class Urls {
   static String deleteTask(String taskId) => '$_baseUrl/deleteTask/$taskId/';
   static String taskStatusCount = '$_baseUrl/taskStatusCount';
   static String updateProfile = '$_baseUrl/profileUpdate';
+  static String checkUserEmailExistUrl({required String email}) =>
+      '$_baseUrl/RecoverVerifyEmail/$email';
+  static String validateOtpUrl({required String email, required int otp}) =>
+      '$_baseUrl/RecoverVerifyOtp/$email/$otp';
+  static const String resetPasswordUrl = '$_baseUrl/RecoverResetPassword';
 }
