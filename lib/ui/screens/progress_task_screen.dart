@@ -1,20 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:sum_app/data/models/network_response.dart';
+import 'package:sum_app/data/models/task_list_model.dart';
+import 'package:sum_app/data/models/task_model.dart';
+import 'package:sum_app/data/service/network_caller.dart';
+import 'package:sum_app/data/utils/urls.dart';
+import 'package:sum_app/ui/widgets/centered_circular_progress_indicator.dart';
+import 'package:sum_app/ui/widgets/snack_bar_message.dart';
+import 'package:sum_app/ui/widgets/task_card.dart';
 
-class ProgressTaskScreen extends StatelessWidget {
+class ProgressTaskScreen extends StatefulWidget {
   const ProgressTaskScreen({super.key});
 
   @override
+  State<ProgressTaskScreen> createState() => _ProgressTaskScreenState();
+}
+
+class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
+  List<TaskModel> _progressTaskList = [];
+  bool _getProgressTaskListInProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getProgressTaskList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ListView.separated(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          // return TaskCard();
+    return Visibility(
+      visible: _getProgressTaskListInProgress == false,
+      replacement: CenteredCircularProgressIndicator(),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          _getProgressTaskList();
         },
-        separatorBuilder: (context, index) {
-          return const SizedBox(height: 8);
-        },
+        child: ListView.separated(
+          itemCount: _progressTaskList.length,
+          itemBuilder: (context, index) {
+            return TaskCard(
+              taskModel: _progressTaskList[index],
+              onRefreshList: _getProgressTaskList,
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 8);
+          },
+        ),
       ),
     );
+  }
+
+  Future<void> _getProgressTaskList() async {
+    _progressTaskList.clear();
+    _getProgressTaskListInProgress = true;
+    setState(() {});
+
+    final NetworkResponse response =
+        await NetworkCaller.getRequest(url: Urls.ProgressTaskList);
+
+    if (response.isSuccess) {
+      final TaskListModel taskListModel =
+          TaskListModel.fromJson(response.responseData);
+      _progressTaskList = taskListModel.taskList ?? [];
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
+    _getProgressTaskListInProgress = false;
+    setState(() {});
   }
 }
