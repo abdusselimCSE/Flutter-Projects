@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sum_app/controller_binder.dart';
+import 'package:sum_app/ui/screens/main_bottom_nav_bar_screen;.dart';
 import 'package:sum_app/ui/screens/splash_screen.dart';
 import 'package:sum_app/ui/utils/app_colors.dart';
 
@@ -14,7 +17,7 @@ class TaskManagerApp extends StatefulWidget {
 class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: TaskManagerApp.navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -24,7 +27,13 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         inputDecorationTheme: _inputDecorationTheme(),
         elevatedButtonTheme: _elevatedButtonThemeData(),
       ),
-      home: const SplashScreen(),
+      initialBinding: ControllerBinder(),
+      initialRoute: '/',
+      routes: {
+        SplashScreen.name: (context) => SplashScreen(),
+        MainBottomNavBarScreen.name: (context) =>
+            const MainBottomNavBarScreen(),
+      },
     );
   }
 
