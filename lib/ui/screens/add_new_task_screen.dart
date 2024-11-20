@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sum_app/data/models/network_response.dart';
-import 'package:sum_app/data/service/network_caller.dart';
-import 'package:sum_app/data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:sum_app/ui/controllers/add_new_task_controller.dart';
+import 'package:sum_app/ui/utils/app_colors.dart';
 import 'package:sum_app/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:sum_app/ui/widgets/snack_bar_message.dart';
 import 'package:sum_app/ui/widgets/tm_app_bar.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
@@ -18,8 +17,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _descriptionTEController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _addNewTaskInProgress = false;
   bool _shouldRefreshPreviousPage = false;
+  final AddNewTaskController addNewTaskController =
+      Get.find<AddNewTaskController>();
 
   @override
   Widget build(BuildContext context) {
@@ -74,14 +74,16 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  Visibility(
-                    visible: !_addNewTaskInProgress,
-                    replacement: const CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: _onTapSubmitButton,
-                      child: const Icon(Icons.arrow_circle_right_outlined),
-                    ),
-                  ),
+                  GetBuilder<AddNewTaskController>(builder: (controller) {
+                    return Visibility(
+                      visible: !controller.inProgress,
+                      replacement: const CenteredCircularProgressIndicator(),
+                      child: ElevatedButton(
+                        onPressed: _onTapSubmitButton,
+                        child: const Icon(Icons.arrow_circle_right_outlined),
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -98,25 +100,39 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   }
 
   Future<void> _addNewTask() async {
-    _addNewTaskInProgress = true;
-    setState(() {});
-    Map<String, dynamic> requestBody = {
-      'title': _titleTEController.text.trim(),
-      'description': _descriptionTEController.text.trim(),
-      'status': 'New',
-    };
-    final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.addNewTask, body: requestBody);
+    final bool result = await addNewTaskController.addNewTask(
+        _titleTEController.text.trim(),
+        _descriptionTEController.text.trim(),
+        "New");
 
-    _addNewTaskInProgress = false;
-    setState(() {});
-
-    if (response.isSuccess) {
+    if (result) {
       _shouldRefreshPreviousPage = true;
       _clearTextFields();
-      showSnackBarMessage(context, "New task added!");
+      // showSnackBarMessage(context, "New task added!");
+      Get.showSnackbar(
+        const GetSnackBar(
+          title: "Success",
+          message: "New task added!",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.themeColor,
+          margin: EdgeInsets.only(left: 20, right: 20),
+          borderRadius: 10,
+          duration: Duration(seconds: 3),
+        ),
+      );
     } else {
-      showSnackBarMessage(context, response.errorMessage, true);
+      // showSnackBarMessage(context, addNewTaskController.errorMessage!, true);
+      Get.showSnackbar(
+        GetSnackBar(
+          title: "Error",
+          message: addNewTaskController.errorMessage!,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          margin: const EdgeInsets.only(left: 20, right: 20),
+          borderRadius: 10,
+          duration: const Duration(seconds: 33),
+        ),
+      );
     }
   }
 
