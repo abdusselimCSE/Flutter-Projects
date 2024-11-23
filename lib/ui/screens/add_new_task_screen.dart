@@ -130,7 +130,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
           backgroundColor: Colors.red,
           margin: const EdgeInsets.only(left: 20, right: 20),
           borderRadius: 10,
-          duration: const Duration(seconds: 33),
+          duration: const Duration(seconds: 3),
         ),
       );
     }

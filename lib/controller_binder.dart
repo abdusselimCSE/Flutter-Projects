@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:sum_app/ui/controllers/add_new_task_controller.dart';
+import 'package:sum_app/ui/controllers/cancelled_task_controller.dart';
 import 'package:sum_app/ui/controllers/new_task_list_controller.dart';
 import 'package:sum_app/ui/controllers/sign_in_controller.dart';
 
@@ -9,5 +10,6 @@ class ControllerBinder extends Bindings {
     Get.put(SignInController());
     Get.put(NewTaskListController());
     Get.put(AddNewTaskController());
+    Get.put(CancelledTaskController());
   }
 }
