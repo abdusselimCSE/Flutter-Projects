@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -62,7 +63,8 @@ class _MapScreenState extends State<MapScreen> {
       if (!hasPermission) return;
 
       Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        locationSettings:
+            const LocationSettings(accuracy: LocationAccuracy.high),
       );
 
       LatLng newLocation = LatLng(position.latitude, position.longitude);
@@ -104,29 +106,39 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Real-Time Location Tracker"),
+        elevation: 5,
+        centerTitle: true,
+        title: const Text(
+          "Real-Time Location Tracker",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 30,
+          ),
+        ),
+        backgroundColor: Colors.blue,
       ),
       body: _currentLocation == null
           ? const Center(child: CircularProgressIndicator())
           : GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _currentLocation!,
-          zoom: 16,
-        ),
-        markers: _currentMarker != null ? {_currentMarker!} : {},
-        polylines: _currentPolyline != null ? {_currentPolyline!} : {},
-        onMapCreated: (controller) {
-          _mapController = controller;
-          _isMapInitialized = true;
-          if (_currentLocation != null) {
-            _mapController.animateCamera(
-              CameraUpdate.newLatLng(_currentLocation!),
-            );
-          }
-        },
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-      ),
+              initialCameraPosition: CameraPosition(
+                target: _currentLocation!,
+                zoom: 16,
+              ),
+              markers: _currentMarker != null ? {_currentMarker!} : {},
+              polylines: _currentPolyline != null ? {_currentPolyline!} : {},
+              onMapCreated: (controller) {
+                _mapController = controller;
+                _isMapInitialized = true;
+                if (_currentLocation != null) {
+                  _mapController.animateCamera(
+                    CameraUpdate.newLatLng(_currentLocation!),
+                  );
+                }
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+            ),
     );
   }
 }

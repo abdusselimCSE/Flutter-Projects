@@ -44,37 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCeUFtTPUdRdML_7_lsbrSs6nIQ9o3G708',
-    appId: '1:817516250962:web:19d6f3229075ed130e9c8b',
-    messagingSenderId: '817516250962',
-    projectId: 'ostad-batch-07-bf028',
-    authDomain: 'ostad-batch-07-bf028.firebaseapp.com',
-    storageBucket: 'ostad-batch-07-bf028.firebasestorage.app',
+    apiKey: 'AIzaSyCd9oJhkXzS4jCe8LrcDS8Lz4ecsDrLevQ',
+    appId: '1:915164678715:web:a5aea33db0c66164892a1e',
+    messagingSenderId: '915164678715',
+    projectId: 'ostad-batch-7-4b7e8',
+    authDomain: 'ostad-batch-7-4b7e8.firebaseapp.com',
+    storageBucket: 'ostad-batch-7-4b7e8.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC-yhelZZ4cl7GsyoYzV4-Un4dinKSJCiU',
-    appId: '1:817516250962:android:848bf012ef80a9d00e9c8b',
-    messagingSenderId: '817516250962',
-    projectId: 'ostad-batch-07-bf028',
-    storageBucket: 'ostad-batch-07-bf028.firebasestorage.app',
+    apiKey: 'AIzaSyAg3dzAbc_JtLnf6s69s7wR7UEUwb5xo1E',
+    appId: '1:915164678715:android:fd4ff44f4e9a37c8892a1e',
+    messagingSenderId: '915164678715',
+    projectId: 'ostad-batch-7-4b7e8',
+    storageBucket: 'ostad-batch-7-4b7e8.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCWBy4h-jOInA8a3jvS3C2UR-CkThAAEJQ',
-    appId: '1:817516250962:ios:f694e37aff2a49940e9c8b',
-    messagingSenderId: '817516250962',
-    projectId: 'ostad-batch-07-bf028',
-    storageBucket: 'ostad-batch-07-bf028.firebasestorage.app',
-    iosBundleId: 'com.example.sumApp',
+    apiKey: 'AIzaSyDhmfm26SbJVBtX3zX81KSWxAwkUC_SrOU',
+    appId: '1:915164678715:ios:77caa490fbb36705892a1e',
+    messagingSenderId: '915164678715',
+    projectId: 'ostad-batch-7-4b7e8',
+    storageBucket: 'ostad-batch-7-4b7e8.firebasestorage.app',
+    iosBundleId: 'com.example.googleMapFlutter',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCWBy4h-jOInA8a3jvS3C2UR-CkThAAEJQ',
-    appId: '1:817516250962:ios:f694e37aff2a49940e9c8b',
-    messagingSenderId: '817516250962',
-    projectId: 'ostad-batch-07-bf028',
-    storageBucket: 'ostad-batch-07-bf028.firebasestorage.app',
+    apiKey: 'AIzaSyDhmfm26SbJVBtX3zX81KSWxAwkUC_SrOU',
+    appId: '1:915164678715:ios:4b8c86884764e4e3892a1e',
+    messagingSenderId: '915164678715',
+    projectId: 'ostad-batch-7-4b7e8',
+    storageBucket: 'ostad-batch-7-4b7e8.firebasestorage.app',
     iosBundleId: 'com.example.sumApp',
   );
+
 }

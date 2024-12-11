@@ -14,19 +14,29 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Real-Time Location Tracker'),
+        elevation: 5,
+        centerTitle: true,
+        title: const Text(
+          "Real-Time Location Tracker",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 30,
+          ),
+        ),
+        backgroundColor: Colors.blue,
       ),
       body: GoogleMap(
         initialCameraPosition: const CameraPosition(
           zoom: 16,
           target: LatLng(24.927813000566896, 91.97170432124798),
         ),
-        onTap: (LatLng? latLng){
+        onTap: (LatLng? latLng) {
           print(latLng);
         },
         zoomControlsEnabled: true,
         zoomGesturesEnabled: true,
-        onMapCreated: (GoogleMapController controller){
+        onMapCreated: (GoogleMapController controller) {
           googleMapController = controller;
         },
       ),
