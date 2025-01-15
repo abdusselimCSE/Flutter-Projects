@@ -1,24 +1,17 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:sum_app/firebase_options.dart';
-import 'package:sum_app/live_score_screen.dart';
+import 'package:sum_app/home_screen.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const LiveScoreApp());
+void main() {
+  runApp(const GoogleMapApp());
 }
 
-class LiveScoreApp extends StatelessWidget {
-  const LiveScoreApp({super.key});
+class GoogleMapApp extends StatelessWidget {
+  const GoogleMapApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LiveScoreScreen(),
+      home: HomeScreen(),
     );
   }
 }
