@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           googleMapController.animateCamera(
             CameraUpdate.newCameraPosition(
-              CameraPosition(
+              const CameraPosition(
                 zoom: 16,
                 target: LatLng(
                   24.92779426734168,
