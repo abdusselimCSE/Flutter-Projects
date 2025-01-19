@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sum_app/app/app_colors.dart';
+import 'package:sum_app/app/app_constants/app_constants.dart';
+import 'package:sum_app/features/auth/ui/screens/complete_profile_screen.dart';
 import 'package:sum_app/features/auth/ui/widgets/app_logo_widget.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -15,6 +20,31 @@ class OtpVerificationScreen extends StatefulWidget {
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _optTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final RxInt _remainingTime = AppContants.resendOtpTimeOutInSecs.obs;
+  late Timer timer;
+  final RxBool _enableResendCodeButton = false.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    _startResendCodeTimer();
+  }
+
+  void _startResendCodeTimer() {
+    _enableResendCodeButton.value = false;
+    _remainingTime.value = AppContants.resendOtpTimeOutInSecs;
+    timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (t) {
+        // print(t.tick);
+        _remainingTime.value--;
+        if (_remainingTime.value == 0) {
+          t.cancel();
+          _enableResendCodeButton.value = true;
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +88,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ElevatedButton(
                   onPressed: () {
                     // if (_formKey.currentState!.validate()) {}
+                    Navigator.pushNamed(context, CompleteProfileScreen.name);
                   },
                   child: const Text("Next"),
                 ),
@@ -65,25 +96,37 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
                 //TODO: enable button when 120s is done and invisible the text
                 //stream, timer(setState), getx(obs)
-                RichText(
-                  text: const TextSpan(
-                    text: "This code will expire in ",
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '120s',
-                        style: TextStyle(
-                          color: AppColors.themeColor,
+                Obx(
+                  () => Visibility(
+                    visible: !_enableResendCodeButton.value,
+                    child: RichText(
+                      text: TextSpan(
+                        text: "This code will expire in ",
+                        style: const TextStyle(
+                          color: Colors.grey,
                         ),
+                        children: [
+                          TextSpan(
+                            text: '${_remainingTime}',
+                            style: const TextStyle(
+                              color: AppColors.themeColor,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text("Resend Code"),
+                Obx(
+                  () => Visibility(
+                    visible: _enableResendCodeButton.value,
+                    child: TextButton(
+                      onPressed: () {
+                        _startResendCodeTimer();
+                      },
+                      child: const Text("Resend Code"),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -91,5 +134,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 }
