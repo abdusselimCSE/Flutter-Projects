@@ -10,6 +10,9 @@ class CategoryListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /*
+    * popscope used to restrict back button closes the app completely
+    * */
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (_, __) => _onPop,
