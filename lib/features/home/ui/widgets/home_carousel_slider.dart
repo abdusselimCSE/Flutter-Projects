@@ -13,6 +13,7 @@ class HomeCarouselSlider extends StatefulWidget {
 
 class _HomeCarouselSliderState extends State<HomeCarouselSlider> {
   final ValueNotifier<int> _selectedIndex = ValueNotifier(0);
+  final double _carouselSliderHeight = 180;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class _HomeCarouselSliderState extends State<HomeCarouselSlider> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: 180,
+            height: _carouselSliderHeight,
             viewportFraction: 1,
             onPageChanged: (currentIndex, reason) {
               _selectedIndex.value = currentIndex;
@@ -32,7 +33,7 @@ class _HomeCarouselSliderState extends State<HomeCarouselSlider> {
                 return Column(
                   children: [
                     Container(
-                      height: 180,
+                      height: _carouselSliderHeight,
                       width: MediaQuery.of(context).size.width,
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
