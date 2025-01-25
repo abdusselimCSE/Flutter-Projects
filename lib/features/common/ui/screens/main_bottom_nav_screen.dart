@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sum_app/features/category/ui/screens/category_list_screen.dart';
 import 'package:sum_app/features/common/ui/screens/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/home/ui/screens/home_screen.dart';
 
@@ -15,6 +16,7 @@ class MainBottomNavScreen extends StatefulWidget {
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
+    CategoryListScreen(),
     HomeScreen(),
     HomeScreen(),
     HomeScreen(),

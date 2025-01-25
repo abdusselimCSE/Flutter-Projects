@@ -6,6 +6,7 @@ import 'package:sum_app/features/auth/ui/screens/complete_profile_screen.dart';
 import 'package:sum_app/features/auth/ui/screens/email_verification_screen.dart';
 import 'package:sum_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:sum_app/features/auth/ui/screens/splash_screen.dart';
+import 'package:sum_app/features/category/ui/screens/category_list_screen.dart';
 import 'package:sum_app/features/common/ui/screens/main_bottom_nav_screen.dart';
 
 class CraftyBay extends StatelessWidget {
@@ -26,6 +27,7 @@ class CraftyBay extends StatelessWidget {
         OtpVerificationScreen.name: (context) => const OtpVerificationScreen(),
         CompleteProfileScreen.name: (context) => const CompleteProfileScreen(),
         MainBottomNavScreen.name: (context) => const MainBottomNavScreen(),
+        CategoryListScreen.name: (context) => const CategoryListScreen(),
       },
     );
   }
