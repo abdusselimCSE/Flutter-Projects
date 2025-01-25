@@ -5,6 +5,8 @@ import 'package:sum_app/features/common/ui/screens/main_bottom_nav_screen.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
+  static const String name = '/';
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
