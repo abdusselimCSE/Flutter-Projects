@@ -127,21 +127,29 @@ class _HomeScreenState extends State<HomeScreen> {
       centerTitle: false,
       title: SvgPicture.asset(AssetsPath.navBarAppLogoSVG),
       actions: [
-        AppBarIconButton(
-          icon: Icons.person_outline_sharp,
-          onTap: () {},
-        ),
-        const SizedBox(width: 6),
-        AppBarIconButton(
-          icon: Icons.call,
-          onTap: () {},
-        ),
-        const SizedBox(width: 6),
-        AppBarIconButton(
-          icon: Icons.notifications_active_outlined,
-          onTap: () {},
-        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Row(
+            children: [
+              AppBarIconButton(
+                icon: Icons.person_outline_sharp,
+                onTap: () {},
+              ),
+              const SizedBox(width: 6),
+              AppBarIconButton(
+                icon: Icons.call,
+                onTap: () {},
+              ),
+              const SizedBox(width: 6),
+              AppBarIconButton(
+                icon: Icons.notifications_active_outlined,
+                onTap: () {},
+              ),
+            ],
+          ),
+        )
       ],
+      titleSpacing: 16,
     );
   }
 }

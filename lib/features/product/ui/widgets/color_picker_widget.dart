@@ -51,17 +51,22 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: 48,
+        width: 48,
         padding: const EdgeInsets.all(8),
         margin: const EdgeInsets.only(right: 8),
         decoration: BoxDecoration(
+          shape: BoxShape.circle,
           border: Border.all(),
           color: isSelected ? AppColors.themeColor : Colors.transparent,
         ),
         alignment: Alignment.center,
-        child: Text(
-          name,
-          style: TextStyle(
-            color: isSelected ? Colors.white : null,
+        child: FittedBox(
+          child: Text(
+            name,
+            style: TextStyle(
+              color: isSelected ? Colors.white : null,
+            ),
           ),
         ),
       ),

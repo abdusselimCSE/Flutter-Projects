@@ -23,7 +23,7 @@ class CategoryListScreen extends StatelessWidget {
             icon: const Icon(
               Icons.arrow_back_ios,
             ),
-            onPressed: () => _onPop,
+            onPressed: _onPop,
           ),
         ),
         body: GridView.builder(
