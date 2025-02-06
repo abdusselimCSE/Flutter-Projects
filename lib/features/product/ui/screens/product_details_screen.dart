@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sum_app/app/app_colors.dart';
+import 'package:sum_app/features/common/ui/widgets/product_quantity_inc_dec_button.dart';
 import 'package:sum_app/features/product/ui/widgets/color_picker_widget.dart';
-
-import '../../../../app/app_colors.dart';
-import '../../../common/ui/widgets/product_quantity_inc_dec_button.dart';
-import '../widgets/product_image_carousel_slider.dart';
-import '../widgets/size_picker_widget.dart';
+import 'package:sum_app/features/product/ui/widgets/product_image_carousel_slider.dart';
+import 'package:sum_app/features/product/ui/widgets/size_picker_widget.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.productId});

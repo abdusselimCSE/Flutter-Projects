@@ -18,6 +18,7 @@ class CategoryListScreen extends StatelessWidget {
       onPopInvokedWithResult: (_, __) => _onPop,
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: false,
           title: const Text("Category List"),
           leading: IconButton(
             icon: const Icon(
