@@ -88,7 +88,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           .verifyEmail(_emailTEController.text.trim());
       if (isSuccess) {
         if (mounted) {
-          Get.toNamed('/otp-verification');
+          Get.toNamed('/otp-verification',
+              arguments: _emailTEController.text.trim());
         }
       } else {
         if (mounted) {

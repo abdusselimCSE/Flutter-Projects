@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sum_app/app/app_colors.dart';
 import 'package:sum_app/features/cart/ui/widgets/cart_product_item_widget.dart';
-import 'package:sum_app/features/common/ui/screens/controllers/main_bottom_nav_controller.dart';
+import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 
 class CartListScreen extends StatefulWidget {
   const CartListScreen({super.key});

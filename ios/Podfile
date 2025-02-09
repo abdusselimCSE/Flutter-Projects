@@ -97,7 +97,7 @@ target 'Runner' do
   use_modular_headers!
 
   # Specify the FirebaseFirestore pod from Git
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '11.4.0'
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '11.7.0'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end

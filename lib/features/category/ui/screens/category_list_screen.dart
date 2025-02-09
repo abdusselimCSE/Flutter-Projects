@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sum_app/features/common/ui/screens/controllers/main_bottom_nav_controller.dart';
+import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/common/ui/widgets/category_item_widget.dart';
 
 class CategoryListScreen extends StatelessWidget {
