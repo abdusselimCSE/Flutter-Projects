@@ -3,7 +3,9 @@ import 'package:sum_app/features/auth/ui/controllers/email_verification_controll
 import 'package:sum_app/features/auth/ui/controllers/otp_verification_controller.dart';
 import 'package:sum_app/features/auth/ui/controllers/read_profile_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
+import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
+import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
 class ControllerBinder extends Bindings {
@@ -15,5 +17,7 @@ class ControllerBinder extends Bindings {
     Get.put(OtpVerificationController());
     Get.put(ReadProfileController());
     Get.put(AuthController());
+    Get.put(HomeBannarListController());
+    Get.put(CategoryListController());
   }
 }

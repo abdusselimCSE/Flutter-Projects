@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:sum_app/app/assets_path.dart';
+import 'package:sum_app/features/common/data/models/category_model.dart';
+import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/common/ui/widgets/category_item_widget.dart';
 import 'package:sum_app/features/common/ui/widgets/product_item_widget.dart';
+import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
 import 'package:sum_app/features/home/ui/widgets/app_bar_icon_button.dart';
 import 'package:sum_app/features/home/ui/widgets/home_carousel_slider.dart';
 import 'package:sum_app/features/home/ui/widgets/home_section_header.dart';
@@ -25,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: _buildAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -38,7 +41,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _searchBarController,
               ),
               const SizedBox(height: 16),
-              const HomeCarouselSlider(),
+              GetBuilder<HomeBannarListController>(
+                builder: (controller) {
+                  if (controller.inProgress) {
+                    return const SizedBox(
+                      height: 180,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return HomeCarouselSlider(
+                    bannarList: controller.bannarList,
+                  );
+                },
+              ),
               const SizedBox(height: 16),
               HomeSectionHeader(
                 title: "Categories",
@@ -47,12 +64,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _getCategoryList(),
-                ),
-              ),
+              GetBuilder<CategoryListController>(builder: (controller) {
+                if (controller.inProgress) {
+                  return const SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _getCategoryList(
+                      controller.categoryList,
+                    ),
+                  ),
+                );
+              }),
               const SizedBox(height: 16),
               HomeSectionHeader(
                 title: "Popular",
@@ -96,13 +125,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<Widget> _getCategoryList() {
+  List<Widget> _getCategoryList(List<CategoryModel> categoryModelList) {
     List<Widget> categoryList = [];
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < categoryModelList.length; i++) {
       categoryList.add(
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(right: 16),
-          child: CategoryItemWidget(),
+          child: CategoryItemWidget(
+            categoryModel: categoryModelList[i],
+          ),
         ),
       );
     }
@@ -122,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return productList;
   }
 
-  AppBar buildAppBar() {
+  AppBar _buildAppBar() {
     return AppBar(
       centerTitle: false,
       title: SvgPicture.asset(AssetsPath.navBarAppLogoSVG),

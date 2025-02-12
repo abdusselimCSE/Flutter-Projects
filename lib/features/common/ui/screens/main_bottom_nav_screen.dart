@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sum_app/features/cart/ui/screens/cart_list_screen.dart';
 import 'package:sum_app/features/category/ui/screens/category_list_screen.dart';
+import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
+import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
 import 'package:sum_app/features/home/ui/screens/home_screen.dart';
 import 'package:sum_app/features/wishlist/ui/screens/wish_list_screen.dart';
 
@@ -16,12 +18,22 @@ class MainBottomNavScreen extends StatefulWidget {
 }
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
+  final HomeBannarListController _homeBannarListController =
+      Get.put(HomeBannarListController());
+
   final List<Widget> _screens = [
     const HomeScreen(),
     const CategoryListScreen(),
     const CartListScreen(),
     const WishListScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _homeBannarListController.getHomeBannarList();
+    Get.find<CategoryListController>().getCategoryList();
+  }
 
   @override
   Widget build(BuildContext context) {
