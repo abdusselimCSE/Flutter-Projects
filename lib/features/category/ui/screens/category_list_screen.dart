@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/common/ui/widgets/category_item_widget.dart';
@@ -29,14 +30,13 @@ class CategoryListScreen extends StatelessWidget {
           ),
         ),
         body: RefreshIndicator(
+          notificationPredicate: (_) => true,
           onRefresh: () async {
             await Get.find<CategoryListController>().getCategoryList();
           },
           child: GetBuilder<CategoryListController>(builder: (controller) {
             if (controller.inProgress) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return _buildShimmerEffect(controller);
             }
             return GridView.builder(
               itemCount: controller.categoryList.length,
@@ -55,6 +55,31 @@ class CategoryListScreen extends StatelessWidget {
           }),
         ),
       ),
+    );
+  }
+
+  Widget _buildShimmerEffect(CategoryListController controller) {
+    return GridView.builder(
+      itemCount: controller.categoryList.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
+      },
     );
   }
 

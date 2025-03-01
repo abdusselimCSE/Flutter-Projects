@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 
-import '../../../common/ui/widgets/product_item_widget.dart';
-
 class WishListScreen extends StatefulWidget {
   const WishListScreen({super.key});
 
@@ -35,7 +33,7 @@ class _WishListScreenState extends State<WishListScreen> {
             ),
             itemCount: 20,
             itemBuilder: (context, index) {
-              return const FittedBox(child: ProductItemWidget());
+              // return const FittedBox(child: ProductItemWidget());
             },
           ),
         ),

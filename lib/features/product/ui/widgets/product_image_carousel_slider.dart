@@ -5,7 +5,10 @@ import 'package:sum_app/app/app_colors.dart';
 class ProductImageCarouselSlider extends StatefulWidget {
   const ProductImageCarouselSlider({
     super.key,
+    required this.imageUrls,
   });
+
+  final List<String> imageUrls;
 
   @override
   State<ProductImageCarouselSlider> createState() =>
@@ -29,7 +32,7 @@ class _ProductImageCarouselSliderState
               _selectedIndex.value = currentIndex;
             },
           ),
-          items: [1, 2, 3, 4, 5].map((i) {
+          items: widget.imageUrls.map((url) {
             return Builder(
               builder: (BuildContext context) {
                 return Column(
@@ -39,12 +42,10 @@ class _ProductImageCarouselSliderState
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                         color: Colors.black12,
+                        image: DecorationImage(
+                            image: NetworkImage(url), fit: BoxFit.cover),
                       ),
                       alignment: Alignment.center,
-                      child: Text(
-                        'text $i',
-                        style: const TextStyle(fontSize: 16.0),
-                      ),
                     ),
                   ],
                 );
@@ -62,7 +63,7 @@ class _ProductImageCarouselSliderState
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < widget.imageUrls.length; i++)
                       Container(
                         height: 16,
                         width: 16,

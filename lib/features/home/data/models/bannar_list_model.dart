@@ -1,12 +1,12 @@
 import 'package:sum_app/features/home/data/models/bannar_model.dart';
 
-class BannarListModel {
+class ProductDetailsModel {
   String? msg;
   List<BannarModel>? bannarList;
 
-  BannarListModel({this.msg, this.bannarList});
+  ProductDetailsModel({this.msg, this.bannarList});
 
-  BannarListModel.fromJson(Map<String, dynamic> json) {
+  ProductDetailsModel.fromJson(Map<String, dynamic> json) {
     msg = json['msg'];
     if (json['data'] != null) {
       bannarList = <BannarModel>[];

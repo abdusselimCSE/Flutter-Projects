@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sum_app/app/assets_path.dart';
 import 'package:sum_app/features/common/data/models/category_model.dart';
+import 'package:sum_app/features/common/data/models/product_model.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/common/ui/widgets/category_item_widget.dart';
+import 'package:sum_app/features/common/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:sum_app/features/common/ui/widgets/product_item_widget.dart';
 import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
+import 'package:sum_app/features/home/ui/controllers/popular_product_listcontroller.dart';
 import 'package:sum_app/features/home/ui/widgets/app_bar_icon_button.dart';
 import 'package:sum_app/features/home/ui/widgets/home_carousel_slider.dart';
 import 'package:sum_app/features/home/ui/widgets/home_section_header.dart';
@@ -44,10 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
               GetBuilder<HomeBannarListController>(
                 builder: (controller) {
                   if (controller.inProgress) {
-                    return const SizedBox(
-                      height: 180,
-                      child: Center(
-                        child: CircularProgressIndicator(),
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: 180,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                     );
                   }
@@ -88,11 +97,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {},
               ),
               const SizedBox(height: 8),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _getProductList(),
-                ),
+              GetBuilder<PopularProductListController>(
+                builder: (controller) {
+                  if (controller.inProgress) {
+                    return const SizedBox(
+                      height: 200,
+                      child: CenteredCircularProgressIndicator(),
+                    );
+                  }
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: _getProductList(controller.productList),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 16),
               HomeSectionHeader(
@@ -103,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: _getProductList(),
+                  children: _getProductList([]),
                 ),
               ),
               const SizedBox(height: 16),
@@ -115,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: _getProductList(),
+                  children: _getProductList([]),
                 ),
               ),
             ],
@@ -130,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int i = 0; i < categoryModelList.length; i++) {
       categoryList.add(
         Padding(
-          padding: EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.only(right: 16),
           child: CategoryItemWidget(
             categoryModel: categoryModelList[i],
           ),
@@ -140,17 +159,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return categoryList;
   }
 
-  List<Widget> _getProductList() {
-    List<Widget> productList = [];
-    for (int i = 0; i < 10; i++) {
-      productList.add(
-        const Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: ProductItemWidget(),
+  List<Widget> _getProductList(List<ProductModel> productList) {
+    List<Widget> list = [];
+    for (int i = 0; i < productList.length; i++) {
+      list.add(
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: ProductItemWidget(
+            productModel: productList[i],
+          ),
         ),
       );
     }
-    return productList;
+    return list;
   }
 
   AppBar _buildAppBar() {

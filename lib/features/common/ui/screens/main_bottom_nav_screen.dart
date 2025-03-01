@@ -5,6 +5,7 @@ import 'package:sum_app/features/category/ui/screens/category_list_screen.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
+import 'package:sum_app/features/home/ui/controllers/popular_product_listcontroller.dart';
 import 'package:sum_app/features/home/ui/screens/home_screen.dart';
 import 'package:sum_app/features/wishlist/ui/screens/wish_list_screen.dart';
 
@@ -23,7 +24,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const CategoryListScreen(),
+    CategoryListScreen(),
     const CartListScreen(),
     const WishListScreen(),
   ];
@@ -33,6 +34,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
     super.initState();
     _homeBannarListController.getHomeBannarList();
     Get.find<CategoryListController>().getCategoryList();
+    Get.find<PopularProductListController>().getProductList();
   }
 
   @override

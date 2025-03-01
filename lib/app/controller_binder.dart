@@ -5,7 +5,10 @@ import 'package:sum_app/features/auth/ui/controllers/read_profile_controller.dar
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
+import 'package:sum_app/features/common/ui/controllers/product_list_controller.dart';
 import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
+import 'package:sum_app/features/home/ui/controllers/popular_product_listcontroller.dart';
+import 'package:sum_app/features/product/ui/controllers/product_details_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
 class ControllerBinder extends Bindings {
@@ -19,5 +22,8 @@ class ControllerBinder extends Bindings {
     Get.put(AuthController());
     Get.put(HomeBannarListController());
     Get.put(CategoryListController());
+    Get.put(PopularProductListController());
+    Get.put(ProductListController());
+    Get.put(ProductDetailsController());
   }
 }
