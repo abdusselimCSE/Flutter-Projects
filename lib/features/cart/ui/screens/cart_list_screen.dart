@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sum_app/app/app_colors.dart';
+import 'package:sum_app/features/cart/ui/controllers/cart_item_list_controller.dart';
 import 'package:sum_app/features/cart/ui/widgets/cart_product_item_widget.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 
@@ -13,6 +14,12 @@ class CartListScreen extends StatefulWidget {
 
 class _CartListScreenState extends State<CartListScreen> {
   @override
+  void initState() {
+    super.initState();
+    Get.find<CartProductItemController>().getCartItemList();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
@@ -24,19 +31,30 @@ class _CartListScreenState extends State<CartListScreen> {
           leading: IconButton(
               onPressed: _onPop, icon: const Icon(Icons.arrow_back_ios)),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return const CartProductItemWidget();
-                },
+        body: GetBuilder<CartProductItemController>(builder: (controller) {
+          if (controller.inProgress) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (controller.cartProducts.isEmpty) {
+            return const Center(child: Text("No items in Cart"));
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: controller.cartProducts.length,
+                  itemBuilder: (context, index) {
+                    return CartProductItemWidget(
+                      productModel: controller.cartProducts[index],
+                    );
+                  },
+                ),
               ),
-            ),
-            _buildPriceAndCheckoutSection(),
-          ],
-        ),
+              _buildPriceAndCheckoutSection(),
+            ],
+          );
+        }),
       ),
     );
   }

@@ -1,32 +1,34 @@
 import 'package:get/get.dart';
 import 'package:sum_app/app/urls.dart';
-import 'package:sum_app/features/home/data/models/bannar_list_model.dart';
-import 'package:sum_app/features/home/data/models/bannar_model.dart';
+import 'package:sum_app/features/home/data/models/slider_model.dart';
+import 'package:sum_app/features/home/data/models/slider_pagination_response.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
-class HomeBannarListController extends GetxController {
+class SliderListController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
 
-  ProductDetailsModel? _bannarListModel;
+  SliderPaginationModel? _sliderPaginationModel;
 
-  List<BannarModel> get bannarList => _bannarListModel?.bannarList ?? [];
+  List<SliderModel> get sliderBannerList =>
+      _sliderPaginationModel?.data?.results ?? [];
 
   String? _errorMessage;
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> getHomeBannarList() async {
+  Future<bool> getHomeSliders() async {
     _inProgress = true;
     update();
     bool isSuccess = false;
 
     final NetworkResponse response = await Get.find<NetworkCaller>().getRequest(
-      Urls.bannarListUrl,
+      Urls.homeSliderUrl,
     );
     if (response.isSuccess) {
-      _bannarListModel = ProductDetailsModel.fromJson(response.responseData);
+      _sliderPaginationModel =
+          SliderPaginationModel.fromJson(response.responseData);
       isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;

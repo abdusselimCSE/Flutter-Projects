@@ -43,7 +43,7 @@ class _ProductImageCarouselSliderState
                       decoration: BoxDecoration(
                         color: Colors.black12,
                         image: DecorationImage(
-                            image: NetworkImage(url), fit: BoxFit.cover),
+                            image: NetworkImage(url), fit: BoxFit.contain),
                       ),
                       alignment: Alignment.center,
                     ),

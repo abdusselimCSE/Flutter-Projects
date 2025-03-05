@@ -3,15 +3,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sum_app/app/assets_path.dart';
-import 'package:sum_app/features/common/data/models/category_model.dart';
+import 'package:sum_app/features/common/data/models/category/category_pagination_model.dart';
 import 'package:sum_app/features/common/data/models/product_model.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:sum_app/features/common/ui/widgets/category_item_widget.dart';
 import 'package:sum_app/features/common/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:sum_app/features/common/ui/widgets/product_item_widget.dart';
-import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
 import 'package:sum_app/features/home/ui/controllers/popular_product_listcontroller.dart';
+import 'package:sum_app/features/home/ui/controllers/slider_list_controller.dart';
 import 'package:sum_app/features/home/ui/widgets/app_bar_icon_button.dart';
 import 'package:sum_app/features/home/ui/widgets/home_carousel_slider.dart';
 import 'package:sum_app/features/home/ui/widgets/home_section_header.dart';
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _searchBarController,
               ),
               const SizedBox(height: 16),
-              GetBuilder<HomeBannarListController>(
+              GetBuilder<SliderListController>(
                 builder: (controller) {
                   if (controller.inProgress) {
                     return Shimmer.fromColors(
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                   return HomeCarouselSlider(
-                    bannarList: controller.bannarList,
+                    sliderList: controller.sliderBannerList,
                   );
                 },
               ),
@@ -85,9 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: _getCategoryList(
-                      controller.categoryList,
-                    ),
+                    children: _getCategoryList(controller.categoryList),
                   ),
                 );
               }),
@@ -108,8 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: _getProductList(controller.productList),
-                    ),
+                        // children: _getProductList(controller.getProductList()),
+                        ),
                   );
                 },
               ),
@@ -144,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<Widget> _getCategoryList(List<CategoryModel> categoryModelList) {
+  List<Widget> _getCategoryList(List<CategoryItemModel> categoryModelList) {
     List<Widget> categoryList = [];
     for (int i = 0; i < categoryModelList.length; i++) {
       categoryList.add(
@@ -159,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return categoryList;
   }
 
-  List<Widget> _getProductList(List<ProductModel> productList) {
+  List<Widget> _getProductList(List<Product> productList) {
     List<Widget> list = [];
     for (int i = 0; i < productList.length; i++) {
       list.add(

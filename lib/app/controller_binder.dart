@@ -1,14 +1,18 @@
 import 'package:get/get.dart';
-import 'package:sum_app/features/auth/ui/controllers/email_verification_controller.dart';
 import 'package:sum_app/features/auth/ui/controllers/otp_verification_controller.dart';
-import 'package:sum_app/features/auth/ui/controllers/read_profile_controller.dart';
+import 'package:sum_app/features/auth/ui/controllers/sign_in_controller.dart';
+import 'package:sum_app/features/auth/ui/controllers/sign_up_controller.dart';
+import 'package:sum_app/features/cart/ui/controllers/add_to_cart_controller.dart';
+import 'package:sum_app/features/cart/ui/controllers/cart_item_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
-import 'package:sum_app/features/common/ui/controllers/product_list_controller.dart';
-import 'package:sum_app/features/home/ui/controllers/home_banner_list_controller.dart';
+import 'package:sum_app/features/common/ui/controllers/product_list_by_category_controller.dart';
 import 'package:sum_app/features/home/ui/controllers/popular_product_listcontroller.dart';
+import 'package:sum_app/features/home/ui/controllers/slider_list_controller.dart';
 import 'package:sum_app/features/product/ui/controllers/product_details_controller.dart';
+import 'package:sum_app/features/wishlist/ui/controllers/add_to_wishlist_controller.dart';
+import 'package:sum_app/features/wishlist/ui/controllers/wishlist_item_list_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
 class ControllerBinder extends Bindings {
@@ -16,14 +20,18 @@ class ControllerBinder extends Bindings {
   void dependencies() {
     Get.put(MainBottomNavController());
     Get.put(NetworkCaller());
-    Get.put(EmailVerificationController());
+    Get.put(SignInController());
+    Get.put(SignUpController());
     Get.put(OtpVerificationController());
-    Get.put(ReadProfileController());
+    Get.put(SliderListController());
     Get.put(AuthController());
-    Get.put(HomeBannarListController());
     Get.put(CategoryListController());
     Get.put(PopularProductListController());
-    Get.put(ProductListController());
+    Get.put(ProductListByCategoryController());
     Get.put(ProductDetailsController());
+    Get.put(WishListProductItemController());
+    Get.put(AddToWishlistController());
+    Get.put(CartProductItemController());
+    Get.put(AddToCartListController());
   }
 }

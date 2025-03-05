@@ -4,7 +4,7 @@ import 'package:sum_app/features/auth/data/models/auth_success_model.dart';
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
-class OtpVerificationController extends GetxController {
+class SignInController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -13,28 +13,25 @@ class OtpVerificationController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> verifyOtp(String email, String otp) async {
+  Future<bool> signIn(String email, String password) async {
     _inProgress = true;
     update();
     bool isSuccess = false;
 
-    final Map<String, dynamic> requestParams = {
+    final requestParams = {
       "email": email,
-      "otp": otp,
+      "password": password,
     };
 
-    final NetworkResponse response =
-        await Get.find<NetworkCaller>().postRequest(
-      Urls.verifyOtpUrl,
-      body: requestParams,
-    );
+    final NetworkResponse response = await Get.find<NetworkCaller>()
+        .postRequest(Urls.signInUrl, body: requestParams);
 
     if (response.isSuccess) {
-      AuthSuccessModel authSuccessModel =
+      AuthSuccessModel signInModel =
           AuthSuccessModel.fromJson(response.responseData);
       AuthController authController = Get.find<AuthController>();
       await authController.saveUserData(
-          authSuccessModel.data!.token!, authSuccessModel.data!.user!);
+          signInModel.data!.token!, signInModel.data!.user!);
       _errorMessage = null;
       isSuccess = true;
     } else {

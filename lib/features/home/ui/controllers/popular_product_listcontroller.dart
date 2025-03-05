@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:sum_app/app/urls.dart';
-import 'package:sum_app/features/common/data/models/product_list_model.dart';
 import 'package:sum_app/features/common/data/models/product_model.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
@@ -9,9 +8,7 @@ class PopularProductListController extends GetxController {
 
   bool get inProgress => _inProgress;
 
-  ProductListModel? _productListModel;
-
-  List<ProductModel> get productList => _productListModel?.productList ?? [];
+  Product? _productListModel;
 
   String? _errorMessage;
 
@@ -27,7 +24,7 @@ class PopularProductListController extends GetxController {
       Urls.productListByRemarkUrl('popular'),
     );
     if (response.isSuccess) {
-      _productListModel = ProductListModel.fromJson(response.responseData);
+      _productListModel = Product.fromJson(response.responseData);
       isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;

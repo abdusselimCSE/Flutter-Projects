@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
+import 'package:sum_app/features/common/data/models/error_response_model.dart';
 
 class NetworkResponse {
   final bool isSuccess;
@@ -20,9 +21,9 @@ class NetworkResponse {
 class NetworkCaller {
   final Logger _logger = Logger();
 
-  Future<NetworkResponse> getRequest(String url, {String? accessToken}) async {
+  Future<NetworkResponse> getRequest(String url,
+      {Map<String, dynamic>? queryParams, String? accessToken}) async {
     try {
-      Uri uri = Uri.parse(url);
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
@@ -30,10 +31,17 @@ class NetworkCaller {
         headers['token'] = accessToken;
       }
 
+      if (queryParams != null) {
+        url += '?';
+        for (String param in queryParams.keys) {
+          url += '$param=${queryParams[param]}&';
+        }
+      }
+      Uri uri = Uri.parse(url);
       _logRequest(url);
       Response response = await get(uri, headers: headers);
       _logResponse(url, response.statusCode, response.headers, response.body);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final decodedMessage = jsonDecode(response.body);
 
         return NetworkResponse(
@@ -56,18 +64,22 @@ class NetworkCaller {
   }
 
   Future<NetworkResponse> postRequest(String url,
-      {Map<String, dynamic>? body}) async {
+      {Map<String, dynamic>? body, String? accessToken}) async {
     try {
       Uri uri = Uri.parse(url);
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
+      if (accessToken != null) {
+        headers['token'] = accessToken;
+      }
+      // print('This is accesstoken: ${accessToken}');
 
       _logRequest(url, headers, body);
       Response response =
           await post(uri, headers: headers, body: jsonEncode(body));
       _logResponse(url, response.statusCode, response.headers, response.body);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final decodedMessage = jsonDecode(response.body);
 
         return NetworkResponse(
@@ -75,12 +87,57 @@ class NetworkCaller {
             statusCode: response.statusCode,
             responseData: decodedMessage);
       } else {
+        final decodedMessage = jsonDecode(response.body);
+        ErrorResponseModel errorResponseModel =
+            ErrorResponseModel.fromJson(decodedMessage);
         return NetworkResponse(
-            isSuccess: false, statusCode: response.statusCode);
+          isSuccess: false,
+          statusCode: response.statusCode,
+          errorMessage: errorResponseModel.msg,
+        );
       }
     } catch (e) {
       _logResponse(url, -1, null, "", e.toString());
 
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<NetworkResponse> deleteRequest(String url,
+      {String? accessToken}) async {
+    try {
+      Uri uri = Uri.parse(url); // Append the path variable
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+      };
+      if (accessToken != null) {
+        headers['token'] = accessToken;
+      }
+
+      _logRequest(uri.toString(), headers);
+      Response response = await delete(uri, headers: headers);
+      _logResponse(
+          uri.toString(), response.statusCode, response.headers, response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return NetworkResponse(
+          isSuccess: true,
+          statusCode: response.statusCode,
+        );
+      } else {
+        final decodedMessage = jsonDecode(response.body);
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: response.statusCode,
+          errorMessage: decodedMessage['msg'] ?? "Delete failed",
+        );
+      }
+    } catch (e) {
+      _logResponse(url, -1, null, "", e.toString());
       return NetworkResponse(
         isSuccess: false,
         statusCode: -1,

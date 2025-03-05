@@ -1,60 +1,71 @@
-import 'package:sum_app/features/common/data/models/brand_model.dart';
-import 'package:sum_app/features/common/data/models/category_model.dart';
+import 'package:sum_app/features/product/data/models/product_details_model.dart';
 
-class ProductModel {
-  int? id;
+class Product {
+  String? id;
   String? title;
-  String? shortDes;
-  String? price;
-  int? discount;
-  String? discountPrice;
-  String? image;
-  int? stock;
-  int? star;
-  String? remark;
-  int? categoryId;
-  int? brandId;
+  Brand? brand;
+  List<Category>? categories;
+  String? slug;
+  String? metaDescription;
+  String? description;
+  List<String>? photos;
+  List<String>? colors;
+  List<String>? sizes;
+  List<String>? tags;
+  dynamic regularPrice;
+  int? currentPrice;
+  int? quantity;
   String? createdAt;
   String? updatedAt;
-  BrandModel? brand;
-  CategoryModel? category;
+  int? v;
 
-  ProductModel(
-      {this.id,
-      this.title,
-      this.shortDes,
-      this.price,
-      this.discount,
-      this.discountPrice,
-      this.image,
-      this.stock,
-      this.star,
-      this.remark,
-      this.categoryId,
-      this.brandId,
-      this.createdAt,
-      this.updatedAt,
-      this.brand,
-      this.category});
+  Product({
+    this.id,
+    this.title,
+    this.brand,
+    this.categories,
+    this.slug,
+    this.metaDescription,
+    this.description,
+    this.photos,
+    this.colors,
+    this.sizes,
+    this.tags,
+    this.regularPrice,
+    this.currentPrice,
+    this.quantity,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+  });
 
-  ProductModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    shortDes = json['short_des'];
-    price = json['price'];
-    discount = json['discount'];
-    discountPrice = json['discount_price'];
-    image = json['image'];
-    stock = json['stock'];
-    star = json['star'];
-    remark = json['remark'];
-    categoryId = json['category_id'];
-    brandId = json['brand_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    brand = json['brand'] != null ? BrandModel.fromJson(json['brand']) : null;
-    category = json['category'] != null
-        ? CategoryModel.fromJson(json['category'])
-        : null;
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['_id'],
+      title: json['title'],
+      brand: json['brand'] is Map<String, dynamic>
+          ? Brand.fromJson(json['brand'])
+          : null,
+      categories: json['categories'] != null
+          ? (json['categories'].isNotEmpty && json['categories'][0] is Map)
+              ? List<Category>.from(
+                  json['categories'].map((v) => Category.fromJson(v)))
+              : List<Category>.from(
+                  json['categories'].map((v) => Category(id: v)))
+          : [],
+      slug: json['slug'],
+      metaDescription: json['meta_description'],
+      description: json['description'],
+      photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
+      colors: json['colors'] != null ? List<String>.from(json['colors']) : [],
+      sizes: json['sizes'] != null ? List<String>.from(json['sizes']) : [],
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : [],
+      regularPrice: json['regular_price'],
+      currentPrice: json['current_price'],
+      quantity: json['quantity'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      v: json['__v'],
+    );
   }
 }

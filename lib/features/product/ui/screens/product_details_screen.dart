@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sum_app/app/app_colors.dart';
+import 'package:sum_app/features/cart/ui/controllers/add_to_cart_controller.dart';
+import 'package:sum_app/features/common/data/models/product_model.dart';
 import 'package:sum_app/features/common/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:sum_app/features/common/ui/widgets/product_quantity_inc_dec_button.dart';
-import 'package:sum_app/features/product/data/models/product_details_model.dart';
 import 'package:sum_app/features/product/ui/controllers/product_details_controller.dart';
 import 'package:sum_app/features/product/ui/widgets/color_picker_widget.dart';
 import 'package:sum_app/features/product/ui/widgets/product_image_carousel_slider.dart';
 import 'package:sum_app/features/product/ui/widgets/size_picker_widget.dart';
+import 'package:sum_app/features/wishlist/ui/controllers/add_to_wishlist_controller.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.productId});
 
   static const String name = '/product/product-details';
-  final int productId;
+  final String productId;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -37,7 +39,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
       body: GetBuilder<ProductDetailsController>(builder: (controller) {
         if (controller.inProgress) {
-          return CenteredCircularProgressIndicator();
+          return const CenteredCircularProgressIndicator();
         }
         if (controller.errorMessage != null) {
           return Center(
@@ -45,7 +47,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           );
         }
 
-        ProductDetails productDetails = controller.productDetails!;
+        Product? eachProductData = controller.productDetails;
+
+        // print(eachProductData?.id);
+        // print(widget.productId);
 
         return Column(
           children: [
@@ -55,12 +60,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 child: Column(
                   children: [
                     ProductImageCarouselSlider(
-                      imageUrls: [
-                        productDetails.img1!,
-                        productDetails.img2!,
-                        productDetails.img3!,
-                        productDetails.img4!,
-                      ],
+                      imageUrls: eachProductData?.photos ?? [],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16),
@@ -75,7 +75,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      productDetails.product?.title ?? '',
+                                      eachProductData?.title ?? '',
                                       textAlign: TextAlign.start,
                                       style: textTheme.titleMedium,
                                     ),
@@ -83,15 +83,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            Icon(
+                                            const Icon(
                                               Icons.star,
                                               color: Colors.amber,
                                               size: 18,
                                             ),
-                                            SizedBox(width: 4),
+                                            const SizedBox(width: 4),
                                             Text(
-                                              '${productDetails.product?.star ?? ''}',
-                                              style: TextStyle(
+                                              '${eachProductData?.v ?? ''}',
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.grey,
                                               ),
@@ -109,10 +109,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(4),
                                           ),
-                                          child: const Icon(
-                                            Icons.favorite_border,
-                                            size: 14,
-                                            color: Colors.white,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Get.find<
+                                                      AddToWishlistController>()
+                                                  .addToWishList(
+                                                      eachProductData!.id! ??
+                                                          '');
+                                            },
+                                            child: const Icon(
+                                              Icons.favorite_border,
+                                              size: 14,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         )
                                       ],
@@ -133,7 +142,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                           const SizedBox(height: 8),
                           ColorPickerWidget(
-                            colors: productDetails.color?.split(',') ?? [],
+                            colors: eachProductData?.colors ?? [],
                             onColorSelected: (String selectedColor) {},
                           ),
                           const SizedBox(height: 16),
@@ -143,7 +152,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                           const SizedBox(height: 8),
                           SizePickerWidget(
-                            sizes: productDetails.size?.split(',') ?? [],
+                            sizes: eachProductData?.sizes ?? [],
                             onSizeSelected: (String selectedSize) {},
                           ),
                           const SizedBox(height: 16),
@@ -153,8 +162,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            productDetails.des ?? '',
-                            style: TextStyle(
+                            eachProductData?.description ?? '',
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.grey,
@@ -168,7 +177,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
             buildPriceAndAddToCardSection(
-                textTheme, productDetails.product?.price ?? '0.0'),
+                textTheme, eachProductData?.currentPrice.toString() ?? '0'),
           ],
         );
       }),
@@ -176,6 +185,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget buildPriceAndAddToCardSection(TextTheme textTheme, String price) {
+    Product? eachProductData =
+        Get.find<ProductDetailsController>().productDetails;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -193,7 +204,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
               Text(
                 "\$$price",
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.themeColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
@@ -204,7 +215,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             width: 120,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.find<AddToCartListController>()
+                    .addToCartList(eachProductData!.id! ?? '');
+              },
               child: const Text("Add to Cart"),
             ),
           ),

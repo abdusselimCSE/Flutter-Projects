@@ -1,32 +1,47 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sum_app/features/auth/data/models/profile_model.dart';
+import 'package:sum_app/features/auth/data/models/auth_success_model.dart';
 
 class AuthController {
   final String _accessTokenKey = 'access_token';
-  final String _profileDataKey = 'access_token';
+  final String _profileDataKey = 'profile_data'; // Fixed Key Name
 
   String? accessToken;
-  ProfileModel? profileModel;
+  User? profileModel;
 
-  Future<void> saveUserData(String accessToken, ProfileModel model) async {
+  Future<void> saveUserData(String accessToken, User userModel) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    print("🔹 Saving Access Token: $accessToken"); // Debugging
+    print(
+        "🔹 Saving User Data: ${jsonEncode(userModel.toJson())}"); // Debugging
+
     await sharedPreferences.setString(_accessTokenKey, accessToken);
-    sharedPreferences.setString(_profileDataKey, jsonEncode(model.toJson()));
+    await sharedPreferences.setString(
+        _profileDataKey, jsonEncode(userModel.toJson())); // Correct Key
+
+    this.accessToken = accessToken; // Update in-memory access token
+    profileModel = userModel;
   }
 
   Future<void> getUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     accessToken = sharedPreferences.getString(_accessTokenKey);
-    profileModel = ProfileModel.fromJson(
-        jsonDecode(sharedPreferences.getString(_profileDataKey)!));
+
+    print("🔹 Retrieved Access Token: $accessToken"); // Debugging
+
+    String? userData = sharedPreferences.getString(_profileDataKey);
+    if (userData != null) {
+      profileModel = User.fromJson(jsonDecode(userData));
+    }
   }
 
   Future<bool> isUserLoggedIn() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString(_accessTokenKey);
-    if (token != null) {
+
+    if (token != null && token.isNotEmpty) {
       await getUserData();
       return true;
     }
@@ -36,5 +51,7 @@ class AuthController {
   Future<void> clearUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.clear();
+    accessToken = null;
+    profileModel = null;
   }
 }

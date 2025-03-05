@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sum_app/app/app_colors.dart';
-import 'package:sum_app/app/assets_path.dart';
+import 'package:sum_app/features/common/data/models/product_model.dart';
 import 'package:sum_app/features/common/ui/widgets/product_quantity_inc_dec_button.dart';
 
 class CartProductItemWidget extends StatelessWidget {
   const CartProductItemWidget({
     super.key,
+    required this.productModel,
   });
+
+  final Product productModel;
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +29,19 @@ class CartProductItemWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Image.asset(
-              AssetsPath.dummyImagePng,
-              width: 90,
-              height: 90,
-              fit: BoxFit.scaleDown,
-            ),
+            productModel.photos?.isNotEmpty == true
+                ? Image.network(
+                    productModel.photos!.first,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.scaleDown,
+                  )
+                : Image.asset(
+                    'assets/images/shoe.png',
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.scaleDown,
+                  ),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -40,19 +50,23 @@ class CartProductItemWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
+                              textAlign: TextAlign.start,
                               maxLines: 1,
-                              "Nike Shoe - AK4539 New Year Deal",
+                              productModel.title ?? '',
                               style: textTheme.bodyLarge?.copyWith(
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const Row(
+                            Row(
                               children: [
-                                Text("Color: Red"),
-                                SizedBox(width: 8),
-                                Text("Size: XL"),
+                                Text(
+                                    "Color: ${productModel.colors?.isNotEmpty == true ? productModel.colors!.first : 'N/A'}"),
+                                const SizedBox(width: 8),
+                                Text(
+                                    "Size: ${productModel.sizes?.isNotEmpty == true ? productModel.sizes!.first : 'N/A'}"),
                               ],
                             )
                           ],
@@ -66,9 +80,9 @@ class CartProductItemWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "\$100",
-                        style: TextStyle(
+                      Text(
+                        "\$${productModel.currentPrice ?? ''}",
+                        style: const TextStyle(
                           color: AppColors.themeColor,
                           fontWeight: FontWeight.w600,
                         ),

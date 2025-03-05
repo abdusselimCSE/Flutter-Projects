@@ -9,13 +9,14 @@ class ProductItemWidget extends StatelessWidget {
     required this.productModel,
   });
 
-  final ProductModel productModel;
+  final Product productModel;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, ProductDetailsScreen.name, arguments: 1);
+        Navigator.pushNamed(context, ProductDetailsScreen.name,
+            arguments: productModel.id);
       },
       child: SizedBox(
         width: 140,
@@ -26,19 +27,24 @@ class ProductItemWidget extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.themeColor.withOpacity(0.12),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.themeColor.withOpacity(0.12),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
                   ),
-                ),
-                child: Image.network(
-                  productModel.image ?? '',
-                  width: 140,
-                  height: 90,
-                  fit: BoxFit.scaleDown,
+                  child: productModel.photos != null &&
+                          productModel.photos!.isNotEmpty
+                      ? Image.network(
+                          productModel.photos!.first,
+                          width: 140,
+                          height: 80,
+                          fit: BoxFit.scaleDown,
+                        )
+                      : const SizedBox(),
                 ),
               ),
               Padding(
@@ -47,7 +53,6 @@ class ProductItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       productModel.title ?? '',
-                      maxLines: 1,
                       style: const TextStyle(
                         overflow: TextOverflow.ellipsis,
                         fontSize: 14,
@@ -60,8 +65,9 @@ class ProductItemWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$${productModel.price ?? ''}',
+                          '\$${productModel.currentPrice ?? ''}',
                           style: const TextStyle(
+                            fontSize: 13,
                             fontWeight: FontWeight.w500,
                             color: AppColors.themeColor,
                           ),
@@ -74,8 +80,9 @@ class ProductItemWidget extends StatelessWidget {
                               size: 18,
                             ),
                             Text(
-                              '${productModel.star ?? '0.0'}',
+                              '${productModel.v ?? '0'}',
                               style: const TextStyle(
+                                fontSize: 13,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.themeColor,
                               ),
@@ -90,7 +97,7 @@ class ProductItemWidget extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.favorite_border,
-                            size: 14,
+                            size: 12,
                             color: Colors.white,
                           ),
                         )

@@ -6,11 +6,8 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sum_app/app/app_colors.dart';
 import 'package:sum_app/app/app_constants/app_constants.dart';
 import 'package:sum_app/features/auth/ui/controllers/otp_verification_controller.dart';
-import 'package:sum_app/features/auth/ui/controllers/read_profile_controller.dart';
 import 'package:sum_app/features/auth/ui/widgets/app_logo_widget.dart';
 import 'package:sum_app/features/common/ui/screens/main_bottom_nav_screen.dart';
-
-import 'complete_profile_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key, required this.email});
@@ -79,7 +76,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
                 const SizedBox(height: 24),
                 PinCodeTextField(
-                  length: 6,
+                  length: 4,
                   obscureText: false,
                   animationType: AnimationType.fade,
                   animationDuration: const Duration(milliseconds: 300),
@@ -92,7 +89,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   appContext: context,
                   controller: _otpTEController,
                   validator: (String? value) {
-                    if (value?.length != 6) {
+                    if (value?.length != 4) {
                       return "Enter OTP code";
                     }
                     return null;
@@ -159,12 +156,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       final bool response = await _otpVerificationController.verifyOtp(
           widget.email, _otpTEController.text);
       if (response) {
-        if (_otpVerificationController.shouldNavigateToCompleteProfile) {
-          if (mounted) {
-            Navigator.pushNamed(context, CompleteProfileScreen.name);
-          }
-        }
-      } else {
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(
               context, MainBottomNavScreen.name, (_) => false);

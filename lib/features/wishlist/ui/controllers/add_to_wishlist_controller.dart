@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
 import 'package:sum_app/app/urls.dart';
-import 'package:sum_app/features/auth/data/models/auth_success_model.dart';
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
-class OtpVerificationController extends GetxController {
+class AddToWishlistController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -13,33 +12,32 @@ class OtpVerificationController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> verifyOtp(String email, String otp) async {
+  Future<bool> addToWishList(String productId) async {
+    bool isSuccess = false;
     _inProgress = true;
     update();
-    bool isSuccess = false;
 
-    final Map<String, dynamic> requestParams = {
-      "email": email,
-      "otp": otp,
-    };
+    final authController = Get.find<AuthController>();
+
+    if (authController.accessToken == null) {
+      _inProgress = false;
+      update();
+      return false;
+    }
 
     final NetworkResponse response =
         await Get.find<NetworkCaller>().postRequest(
-      Urls.verifyOtpUrl,
-      body: requestParams,
+      Urls.addItemToWishlistUrl,
+      accessToken: authController.accessToken,
+      body: {"product": productId},
     );
 
     if (response.isSuccess) {
-      AuthSuccessModel authSuccessModel =
-          AuthSuccessModel.fromJson(response.responseData);
-      AuthController authController = Get.find<AuthController>();
-      await authController.saveUserData(
-          authSuccessModel.data!.token!, authSuccessModel.data!.user!);
-      _errorMessage = null;
       isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;
     }
+
     _inProgress = false;
     update();
     return isSuccess;

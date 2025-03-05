@@ -1,23 +1,31 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sum_app/features/auth/data/models/sign_up_params.dart';
+import 'package:sum_app/features/auth/ui/controllers/sign_up_controller.dart';
+import 'package:sum_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:sum_app/features/auth/ui/widgets/app_logo_widget.dart';
+import 'package:sum_app/features/common/ui/widgets/centered_circular_progress_indicator.dart';
+import 'package:sum_app/features/common/ui/widgets/snack_bar_message.dart';
 
-class CompleteProfileScreen extends StatefulWidget {
-  const CompleteProfileScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
-  static const String name = '/Complete-profile';
+  static const String name = '/sign-up';
 
   @override
-  State<CompleteProfileScreen> createState() => _CompleteProfileScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _cityTEController = TextEditingController();
-  final TextEditingController _shippingAddrressTEController =
-      TextEditingController();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final SignUpController _signUpController = Get.find<SignUpController>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +53,20 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ),
               const SizedBox(height: 24),
               buildForm(),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
-                },
-                child: const Text("Complete"),
-              ),
+              GetBuilder<SignUpController>(builder: (controller) {
+                return Visibility(
+                  visible: controller.inProgress == false,
+                  replacement: CenteredCircularProgressIndicator(),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _signUp();
+                      }
+                    },
+                    child: const Text("Sign In"),
+                  ),
+                );
+              }),
             ],
           ),
         ),
@@ -63,6 +79,22 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       key: _formKey,
       child: Column(
         children: [
+          TextFormField(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            controller: _emailTEController,
+            decoration: const InputDecoration(hintText: "Email Address"),
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            validator: (String? value) {
+              if (value?.trim().isEmpty ?? true) {
+                return "Enter your email address";
+              }
+              if (EmailValidator.validate(value!) == false) {
+                return "Enter a valid email address";
+              }
+            },
+          ),
+          const SizedBox(height: 16),
           TextFormField(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: _firstNameTEController,
@@ -108,6 +140,18 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
           const SizedBox(height: 8),
           TextFormField(
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            controller: _passwordTEController,
+            decoration: const InputDecoration(hintText: "Password"),
+            validator: (String? value) {
+              if ((value?.isEmpty ?? true) || value!.length < 6) {
+                return "Enter a valid password";
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: _cityTEController,
             decoration: const InputDecoration(hintText: "City"),
             validator: (String? value) {
@@ -118,22 +162,31 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             },
           ),
           const SizedBox(height: 8),
-          TextFormField(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            controller: _shippingAddrressTEController,
-            maxLines: 3,
-            decoration: const InputDecoration(hintText: "Shipping Address"),
-            validator: (String? value) {
-              if (value?.trim().isEmpty ?? true) {
-                return "Enter valid shipping address";
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
         ],
       ),
     );
+  }
+
+  Future<void> _signUp() async {
+    SingUpParams singUpParams = SingUpParams(
+      email: _emailTEController.text.trim(),
+      firstName: _firstNameTEController.text.trim(),
+      lastName: _lastNameTEController.text.trim(),
+      city: _cityTEController.text.trim(),
+      mobile: _mobileTEController.text.trim(),
+      password: _passwordTEController.text,
+    );
+
+    final bool isSuccess = await _signUpController.signUp(singUpParams);
+    if (isSuccess) {
+      Navigator.pushNamed(
+        context,
+        OtpVerificationScreen.name,
+        arguments: _emailTEController.text.trim(),
+      );
+    } else {
+      showSnackBarMessage(context, _signUpController.errorMessage!);
+    }
   }
 
   @override
@@ -142,7 +195,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     _lastNameTEController.dispose();
     _mobileTEController.dispose();
     _cityTEController.dispose();
-    _shippingAddrressTEController.dispose();
+    _emailTEController.dispose();
     super.dispose();
   }
 }

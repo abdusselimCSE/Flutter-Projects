@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import 'package:sum_app/app/urls.dart';
+import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
-class EmailVerificationController extends GetxController {
+class DeleteItemFromCart extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -11,20 +12,31 @@ class EmailVerificationController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> verifyEmail(String email) async {
+  Future<bool> deleteFromCartList(String productId) async {
+    bool isSuccess = false;
     _inProgress = true;
     update();
-    bool isSuccess = false;
+
+    final authController = Get.find<AuthController>();
+
+    if (authController.accessToken == null) {
+      _inProgress = false;
+      update();
+      return false;
+    }
 
     final NetworkResponse response =
-        await Get.find<NetworkCaller>().getRequest(Urls.verifyEmailUrl(email));
+        await Get.find<NetworkCaller>().deleteRequest(
+      Urls.deleteItemFromCartUrl(productId),
+      accessToken: authController.accessToken,
+    );
 
     if (response.isSuccess) {
-      _errorMessage = null;
       isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;
     }
+
     _inProgress = false;
     update();
     return isSuccess;
