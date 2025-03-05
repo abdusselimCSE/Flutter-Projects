@@ -3,10 +3,13 @@ import 'package:get/get.dart';
 import 'package:sum_app/app/app_colors.dart';
 import 'package:sum_app/features/cart/ui/controllers/cart_item_list_controller.dart';
 import 'package:sum_app/features/cart/ui/widgets/cart_product_item_widget.dart';
+import 'package:sum_app/features/common/data/models/wishlist_or_cart_item_list_model.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
 
 class CartListScreen extends StatefulWidget {
-  const CartListScreen({super.key});
+  final Results? results;
+
+  const CartListScreen({super.key, this.results});
 
   @override
   State<CartListScreen> createState() => _CartListScreenState();
@@ -47,6 +50,7 @@ class _CartListScreenState extends State<CartListScreen> {
                   itemBuilder: (context, index) {
                     return CartProductItemWidget(
                       productModel: controller.cartProducts[index],
+                      results: controller.cartItems[index],
                     );
                   },
                 ),

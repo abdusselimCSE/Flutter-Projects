@@ -4,6 +4,7 @@ import 'package:sum_app/features/auth/ui/controllers/sign_in_controller.dart';
 import 'package:sum_app/features/auth/ui/controllers/sign_up_controller.dart';
 import 'package:sum_app/features/cart/ui/controllers/add_to_cart_controller.dart';
 import 'package:sum_app/features/cart/ui/controllers/cart_item_list_controller.dart';
+import 'package:sum_app/features/cart/ui/controllers/delete_item_from_cart_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/category_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/main_bottom_nav_controller.dart';
@@ -33,5 +34,6 @@ class ControllerBinder extends Bindings {
     Get.put(AddToWishlistController());
     Get.put(CartProductItemController());
     Get.put(AddToCartListController());
+    Get.put(DeleteItemFromCartController());
   }
 }

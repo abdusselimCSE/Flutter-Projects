@@ -13,15 +13,15 @@ class AuthController {
   Future<void> saveUserData(String accessToken, User userModel) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    print("🔹 Saving Access Token: $accessToken"); // Debugging
-    print(
-        "🔹 Saving User Data: ${jsonEncode(userModel.toJson())}"); // Debugging
+    // print("🔹 Saving Access Token: $accessToken"); // Debugging
+    // print(
+    //     "🔹 Saving User Data: ${jsonEncode(userModel.toJson())}"); // Debugging
 
     await sharedPreferences.setString(_accessTokenKey, accessToken);
     await sharedPreferences.setString(
-        _profileDataKey, jsonEncode(userModel.toJson())); // Correct Key
+        _profileDataKey, jsonEncode(userModel.toJson()));
 
-    this.accessToken = accessToken; // Update in-memory access token
+    this.accessToken = accessToken;
     profileModel = userModel;
   }
 
@@ -29,7 +29,7 @@ class AuthController {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     accessToken = sharedPreferences.getString(_accessTokenKey);
 
-    print("🔹 Retrieved Access Token: $accessToken"); // Debugging
+    // print("🔹 Retrieved Access Token: $accessToken"); // Debugging
 
     String? userData = sharedPreferences.getString(_profileDataKey);
     if (userData != null) {

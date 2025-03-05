@@ -12,12 +12,11 @@ class CartProductItemController extends GetxController {
 
   WishlistOrCartItemListModel? _cartItemListModel;
 
-  List<Product> get cartProducts =>
-      _cartItemListModel?.data?.results
-          ?.map((result) => result.product!)
-          .where((product) => product != null)
-          .toList() ??
-      [];
+  WishlistOrCartItemListModel? get cartItemListModel => _cartItemListModel;
+
+  List<Results> get cartItems => _cartItemListModel?.data?.results ?? [];
+
+  List<Product> get cartProducts => cartItems.map((e) => e.product!).toList();
 
   String? _errorMessage;
 
@@ -35,17 +34,16 @@ class CartProductItemController extends GetxController {
       accessToken: authController.accessToken,
     );
 
-    // print("✅ API Response: ${response.responseData}"); // Debugging
-
     if (response.isSuccess) {
-      cartProducts.clear();
       _cartItemListModel =
           WishlistOrCartItemListModel.fromJson(response.responseData);
       isSuccess = true;
-
-      // Print to confirm correct data is received
-      // print(
-      //     "✅ Parsed Products: ${_wishlistOrCartItemListModel?.data?.results?.map((e) => e.product?.title).toList()}");
+      //
+      // /// Debugging: Print all cart item IDs and product names
+      // print("✅ Total items in cart: ${cartItems.length}");
+      // for (var item in cartItems) {
+      //   print("🛒 Cart Item ID: ${item.id}, Product: ${item.product?.title}");
+      // }
     } else {
       _errorMessage = response.errorMessage;
     }

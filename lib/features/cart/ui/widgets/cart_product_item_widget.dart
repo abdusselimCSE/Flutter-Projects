@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sum_app/app/app_colors.dart';
+import 'package:sum_app/features/cart/ui/controllers/delete_item_from_cart_controller.dart';
 import 'package:sum_app/features/common/data/models/product_model.dart';
+import 'package:sum_app/features/common/data/models/wishlist_or_cart_item_list_model.dart';
 import 'package:sum_app/features/common/ui/widgets/product_quantity_inc_dec_button.dart';
 
 class CartProductItemWidget extends StatelessWidget {
   const CartProductItemWidget({
     super.key,
     required this.productModel,
+    required this.results,
   });
 
   final Product productModel;
+
+  final Results results;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +79,12 @@ class CartProductItemWidget extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.delete))
+                        onPressed: () {
+                          Get.find<DeleteItemFromCartController>()
+                              .deleteFromCartList(results.id ?? '');
+                        },
+                        icon: const Icon(Icons.delete),
+                      )
                     ],
                   ),
                   const SizedBox(height: 8),

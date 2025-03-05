@@ -1,9 +1,10 @@
 import 'package:get/get.dart';
 import 'package:sum_app/app/urls.dart';
+import 'package:sum_app/features/cart/ui/controllers/cart_item_list_controller.dart';
 import 'package:sum_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:sum_app/services/network_caller/network_caller.dart';
 
-class DeleteItemFromCart extends GetxController {
+class DeleteItemFromCartController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -25,6 +26,7 @@ class DeleteItemFromCart extends GetxController {
       return false;
     }
 
+    // print("This is the product id: $productId");
     final NetworkResponse response =
         await Get.find<NetworkCaller>().deleteRequest(
       Urls.deleteItemFromCartUrl(productId),
@@ -32,6 +34,7 @@ class DeleteItemFromCart extends GetxController {
     );
 
     if (response.isSuccess) {
+      Get.find<CartProductItemController>().getCartItemList();
       isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;

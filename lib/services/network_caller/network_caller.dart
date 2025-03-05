@@ -162,7 +162,7 @@ class NetworkCaller {
       );
     } else {
       _logger.i(
-        "URL => $url\nHEADERS => $headers\nSTATUS CODE=>$statusCode\nBODY => $body",
+        "URL => $url\nHEADERS => $headers\nSTATUS CODE => $statusCode\nBODY => $body",
       );
     }
   }
