@@ -19,7 +19,15 @@ class NetworkResponse {
 }
 
 class NetworkCaller {
-  final Logger _logger = Logger();
+  final Logger _logger = Logger(
+    printer: PrettyPrinter(
+      methodCount: 0,
+      errorMethodCount: 2,
+      lineLength: 80,
+      colors: true,
+      printEmojis: true,
+    ),
+  );
 
   Future<NetworkResponse> getRequest(String url,
       {Map<String, dynamic>? queryParams, String? accessToken}) async {
